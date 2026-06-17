@@ -1,0 +1,15 @@
+- [ ] Add Basically everything under https://ffxiv.consolegameswiki.com/wiki/Materials
+- - [ ] Ingredients
+- - [X] Seafood
+- - [ ] Stone
+- - [ ] Metal
+- - [ ] Lumber
+- - [ ] Cloth
+- - [ ] Leather
+- - [ ] Bone
+- - [ ] Reagents
+- - [ ] Dyes
+- - [ ] Weapon Parts
+- - [ ] Airship Components
+- - [ ] Submersible Components
+ 
