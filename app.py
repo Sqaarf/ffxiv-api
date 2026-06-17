@@ -3,7 +3,8 @@ import sqlite3
 
 app = Flask(__name__)
 
-DB_PATH = './data/data.db'
+SEAFOOD_DB_PATH = './data/seafood.db'
+MINING_NODE_DB_PATH = './data/mining_node.db'
 
 @app.route('/')
 def index():
@@ -32,7 +33,38 @@ def get_seafood():
         query += " AND location LIKE ?"
         params.append(f"%{location}%")
 
-    con = sqlite3.connect(DB_PATH)
+    con = sqlite3.connect(SEAFOOD_DB_PATH)
+    con.row_factory = sqlite3.Row
+    try:
+        rows = con.execute(query, params).fetchall()
+        return jsonify([dict(row) for row in rows])
+    finally:
+        con.close()
+
+@app.route("/api/mining_node", methods=["GET"])
+def get_mining_node():
+    node_type = request.args.get("node_type")
+    mining_level = request.args.get("mining_level")
+    location = request.args.get("location")
+    item = request.args.get("item")
+
+    query = "SELECT node_type, mining_level, items, location FROM mining_node WHERE 1=1"
+    params = []
+
+    if node_type:
+        query += " AND node_type = ?"
+        params.append(node_type)
+    if mining_level:
+        query += " AND mining_level = ?"
+        params.append(int(mining_level))
+    if location:
+        query += " AND location LIKE ?"
+        params.append(f"%{location}%")
+    if item:
+        query += " AND items LIKE ?"
+        params.append(f"%{item}%")
+
+    con = sqlite3.connect(MINING_NODE_DB_PATH)
     con.row_factory = sqlite3.Row
     try:
         rows = con.execute(query, params).fetchall()

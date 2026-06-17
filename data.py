@@ -1,10 +1,11 @@
 import json
 import sqlite3
-from seafood import SeafoodManager
+from entities.seafood import SeafoodManager
+from entities.mining_node import MiningNodeManager
 
 class DataManager:
     def __init__(self):
-        self.supported_types = {'seafood': SeafoodManager}
+        self.supported_types = {'seafood': SeafoodManager, 'mining_node': MiningNodeManager}
 
     def migrate(self, item_type):
         if item_type not in self.supported_types:
@@ -19,7 +20,7 @@ class DataManager:
         col_names = ', '.join(name for name, _ in schema)
         placeholders = ', '.join(f':{name}' for name, _ in schema)
 
-        with sqlite3.connect('./data/data.db') as conn:
+        with sqlite3.connect(f'./data/{item_type}.db') as conn:
             conn.execute(f"""
                 CREATE TABLE IF NOT EXISTS {item_type} (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,12 +38,12 @@ class DataManager:
             print(f"Unsupported type: {item_type}. Only {list(self.supported_types.keys())} are supported.")
             return
 
-        with sqlite3.connect('./data/data.db') as conn:
+        with sqlite3.connect(f'./data/{item_type}.db') as conn:
             conn.execute(f"DELETE FROM {item_type}")
             print(f"Cleared all data from {item_type} table.")
 
 if __name__ == "__main__":
 
     data_manager = DataManager()
-    # data_manager.generate_json('seafood')
     data_manager.migrate('seafood')
+    data_manager.migrate('mining_node')
